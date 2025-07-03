@@ -39,4 +39,4 @@ services:
 # Database & ORMs
 - use `@JoinColumn({name: 'user_id'})` decorator to rename the new table that will be created by creating the relation for e.g. `@ManyToOne(() => Users, (user) => user.id, { nullable: false })` on the table `todos`. `@Column` on column that will be on that table only, not on foreign key.
 
-# Other Backend Services
+# Others
