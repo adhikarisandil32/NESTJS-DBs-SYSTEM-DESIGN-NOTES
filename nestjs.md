@@ -7,8 +7,12 @@ It’s created using `NestFactory.createApplicationContext()` (as seen in `cli.t
 Think of it as a minimal environment to access your app’s services, modules, or logic without running a full server.
 
 # Docker
-- A general way of writing a docker compose that uses environment in docker. Write this in a `docker-compose.yml` file and then go `docker compose up -d`, you'll be ready to use docker
+- A general way of writing a docker compose that uses environment in docker. Write this in a `docker-compose.yml` file and then go `docker compose up -d`, you'll be ready to use database in docker
 ```
+volumes:
+  ${DATABASE_NAME}_pg_data:
+    name: '${DATABASE_NAME}_pg_data'
+
 services:
   database:
     container_name: '${DATABASE_NAME}_database'
@@ -21,6 +25,15 @@ services:
       POSTGRES_DB: '${DATABASE_NAME}'
     ports:
       - '5439:5432'
+    volumes:
+      - ../'${DATABASE_NAME}_pg_data':/var/lib/postgresql/data
+      - ../data/postgres/initdb.d:/docker-entrypoint-initdb.d
+```
+- `docker exec -it <container_name> /bin/bash`, with this you can enter inside the bash of the container of the database. To use with user `postgres`, go `su postgres` and then `psql`. You'll be connected to the database of the docker. You can also list all the environment vairables used on the container by using `env` or `printenv` command from the terminal of `root` user. `PGDATA` and `PATH` variables can be important for volume maping in which
+```
+    volumes:
+      - ../'${DATABASE_NAME}_pg_data':/var/lib/postgresql/data
+      - ../data/postgres/initdb.d:/docker-entrypoint-initdb.d
 ```
 
 # Database & ORMs
