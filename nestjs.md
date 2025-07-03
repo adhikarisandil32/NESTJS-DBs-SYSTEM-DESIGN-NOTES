@@ -26,7 +26,7 @@ services:
     ports:
       - '5439:5432'
     volumes:
-      - ../'${DATABASE_NAME}_pg_data':/var/lib/postgresql/data
+      - ../${DATABASE_NAME}_pg_data:/var/lib/postgresql/data
       - ../data/postgres/initdb.d:/docker-entrypoint-initdb.d
 ```
 - `docker exec -it <container_name> /bin/bash`, with this you can enter inside the bash of the container of the database. To use with user `postgres`, go `su postgres` and then `psql`. You'll be connected to the database of the docker. You can also list all the environment vairables used on the container by using `env` or `printenv` command from the terminal of `root` user. `PGDATA` and `PATH` variables can be important for volume maping in which `PGDATA` represents the path to postgres data.
