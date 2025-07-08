@@ -1,5 +1,5 @@
 # NestJS
-- `cli.ts` and `main.ts`. In `main.ts` nest factory creates nest app while in `cli.ts` (for `nestjs-command` module) nest factory creates application context (Read More [Here](https://docs.nestjs.com/standalone-applications){target="_blank"}).
+- `cli.ts` and `main.ts`. In `main.ts` nest factory creates nest app while in `cli.ts` (for `nestjs-command` module) nest factory creates application context (Read More [Here](https://docs.nestjs.com/standalone-applications){:target="_blank"}).
   - #### Application Context <br/>
     - What is it? <br/>
 An "application context" is a lightweight version of the NestJS app that doesn’t start a web server. It only loads the parts of the app needed to run specific tasks, like CLI commands.
@@ -33,7 +33,7 @@ Think of it as a minimal environment to access your app’s services, modules, o
   })
   export class CliModule {}
   ```
-  because of which the command module doesn't recognize the setup for its own application, like path parsing on absolute import. As you can see above, `MyLogger` being imported relatively instead of `src/common-modules/logger.service`. For that, another package named [`nestjs-command`](https://www.npmjs.com/package/nestjs-command){target="_blank"} is used which utilizes Nestjs's application context because of which nest recognizes its setup for path parsing as well.
+  because of which the command module doesn't recognize the setup for its own application, like path parsing on absolute import. As you can see above, `MyLogger` being imported relatively instead of `src/common-modules/logger.service`. For that, another package named [`nestjs-command`](https://www.npmjs.com/package/nestjs-command){:target="_blank"} is used which utilizes Nestjs's application context because of which nest recognizes its setup for path parsing as well.
 
 # Docker
 - A general way of writing a docker compose that uses environment in docker. Write this in a `docker-compose.yml` file and then go `docker compose up -d`, you'll be ready to use database in docker
