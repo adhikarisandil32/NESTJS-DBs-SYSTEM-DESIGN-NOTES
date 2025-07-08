@@ -22,16 +22,41 @@ Think of it as a minimal environment to access your app’s services, modules, o
   ```
   `cli.module.ts` being
   ```
-  import { Module } from '@nestjs/common';
-  import { SeedDatabase } from './db-seed.command';
-  // import { UsersService } from '../users/users.service';
-  import { MyLogger } from '../common-modules/logger.service';
-  
-  @Module({
-    imports: [],
-    providers: [SeedDatabase, MyLogger],
-  })
-  export class CliModule {}
+    import { Module } from '@nestjs/common';
+    import { SeedDatabase } from './db-seed.command';
+    import { MyLogger } from '../common-modules/logger.service';
+    import { TypeOrmModule } from '@nestjs/typeorm';
+    import { DataSource } from 'typeorm';
+    import * as dotenv from 'dotenv';
+    
+    dotenv.config();
+    
+    // console.log(__dirname)
+    @Module({
+      imports: [
+        // the configuration is same to that of main.ts, this way DataSouce can also be injected without hassle
+        TypeOrmModule.forRootAsync({
+          useFactory: () => ({
+            type: 'postgres',
+            username: process.env.DATABASE_USERNAME,
+            password: process.env.DATABASE_PASSWORD,
+            database: process.env.DATABASE_NAME,
+            host: 'localhost',
+            port: Number(process.env.DATABASE_PORT),
+            entities: [__dirname + './../**/*.entity{.ts,.js}'], // console.log(__dirname) to see where it is looking for entities for seeding
+            //  migrations: [__dirname + '/migrations/**/*{.ts,.js}'], // because it is for seeding only, migrations not needed
+            synchronize: false,
+          }),
+          dataSourceFactory: async (options) => {
+            const datasource = await new DataSource(options).initialize();
+    
+            return datasource;
+          },
+        }),
+      ],
+      providers: [SeedDatabase, MyLogger],
+    })
+    export class CliModule {}
   ```
   because of which the command module doesn't recognize the setup for its own application, like path parsing on absolute import. As you can see above, `MyLogger` being imported relatively instead of `src/common-modules/logger.service`. For that, another package named <a href="https://www.npmjs.com/package/nestjs-command" target="_blank">`nestjs-command`</a> is used which utilizes Nestjs's application context because of which nest recognizes its setup for path parsing as well.
 
