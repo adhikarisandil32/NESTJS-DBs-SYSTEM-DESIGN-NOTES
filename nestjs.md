@@ -35,6 +35,38 @@ Think of it as a minimal environment to access your app’s services, modules, o
   ```
   because of which the command module doesn't recognize the setup for its own application, like path parsing on absolute import. As you can see above, `MyLogger` being imported relatively instead of `src/common-modules/logger.service`. For that, another package named <a href="https://www.npmjs.com/package/nestjs-command" target="_blank">`nestjs-command`</a> is used which utilizes Nestjs's application context because of which nest recognizes its setup for path parsing as well.
 
+- When to use `imports` and `exports` in `@Module` decorator in nest
+  ```
+    // cats.module.ts
+    import { Module } from '@nestjs/common';
+    import { CatsService } from './cats.service';
+    import { CatsController } from './cats.controller';
+
+    @Module({
+      providers: [CatsService],
+      controllers: [CatsController],
+      exports: [CatsService], // Exports CatsService to other modules
+    })
+    export class CatsModule {}
+
+    // this is exports
+  ```
+  ```
+    // users.module.ts
+    import { Module } from '@nestjs/common';
+    import { UsersController } from './users.controller';
+    import { CatsModule } from '../cats/cats.module'; // Imports CatsModule
+
+    @Module({
+      imports: [CatsModule], // Now UsersModule can use CatsService
+      controllers: [UsersController],
+    })
+    export class UsersModule {}
+
+    // this is imports
+  ```
+  
+
 # Docker
 - A general way of writing a docker compose that uses environment in docker. Write this in a `docker-compose.yml` file and then go `docker compose up -d`, you'll be ready to use database in docker
   ```
