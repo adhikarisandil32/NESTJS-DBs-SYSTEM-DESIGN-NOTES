@@ -66,6 +66,31 @@ Think of it as a minimal environment to access your app’s services, modules, o
   ```
 
 # Database & ORMs
+## TypeORM
 - use `@JoinColumn({name: 'user_id'})` decorator to rename the new table that will be created by creating the relation for e.g. `@ManyToOne(() => Users, (user) => user.id, { nullable: false })` on the table `todos`. `@Column` on column that will be on that table only, not on foreign key.
+- Always beneficial creating `base.entity.ts` file that any module's entity utilizes as follows:
+  ```
+  import {
+    BaseEntity,
+    CreateDateColumn,
+    DeleteDateColumn,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+  } from 'typeorm';
+  
+  export class DBBaseEntity extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+  
+    @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
+    createdAt: Date;
+  
+    @UpdateDateColumn({ type: 'timestamptz', name: 'updated_at' })
+    updatedAt: Date;
+  
+    @DeleteDateColumn({ type: 'timestamptz', name: 'deleted_at' })
+    deletedAt: Date;
+  }
+  ```
 
 # Others
