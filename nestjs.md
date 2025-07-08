@@ -6,7 +6,7 @@ An "application context" is a lightweight version of the NestJS app that doesn�
 It’s created using `NestFactory.createApplicationContext()` (as seen in `cli.ts`), which sets up the NestJS dependency injection system but skips HTTP-related features.
 Think of it as a minimal environment to access your app’s services, modules, or logic without running a full server.
 
-- Default `nest-commander` uses `CommandFactory` has its own way of configuring factory. i.e.
+- Default `nest-commander` uses `CommandFactory` which has its own way of configuring factory. i.e.
   ```
     import { CommandFactory } from 'nest-commander';
     import { CliModule } from './commands/cli.module';
@@ -20,7 +20,7 @@ Think of it as a minimal environment to access your app’s services, modules, o
     
     bootstrap();
   ```
-  cli module being
+  `cli.module.ts` being
   ```
   import { Module } from '@nestjs/common';
   import { SeedDatabase } from './db-seed.command';
@@ -33,7 +33,7 @@ Think of it as a minimal environment to access your app’s services, modules, o
   })
   export class CliModule {}
   ```
-  because of which the command module doesn't recognize the setup for its own application, like path parsing on absolute import. For that, a another package named `nestjs-command` is used which utilizes Nestjs's application context because of which nest recognizes its setup for path parsing as well.
+  because of which the command module doesn't recognize the setup for its own application, like path parsing on absolute import. As you can see above, `MyLogger` being imported relatively instead of `src/common-modules/logger.service`. For that, another package named [`nestjs-command`](https://www.npmjs.com/package/nestjs-command) is used which utilizes Nestjs's application context because of which nest recognizes its setup for path parsing as well.
 
 # Docker
 - A general way of writing a docker compose that uses environment in docker. Write this in a `docker-compose.yml` file and then go `docker compose up -d`, you'll be ready to use database in docker
