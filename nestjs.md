@@ -20,6 +20,19 @@ Think of it as a minimal environment to access your app’s services, modules, o
     
     bootstrap();
   ```
+  cli module being
+  ```
+  import { Module } from '@nestjs/common';
+  import { SeedDatabase } from './db-seed.command';
+  // import { UsersService } from '../users/users.service';
+  import { MyLogger } from '../common-modules/logger.service';
+  
+  @Module({
+    imports: [],
+    providers: [SeedDatabase, MyLogger],
+  })
+  export class CliModule {}
+  ```
   because of which the command module doesn't recognize the setup for its own application, like path parsing on absolute import. For that, a another package named `nestjs-command` is used which utilizes Nestjs's application context because of which nest recognizes its setup for path parsing as well.
 
 # Docker
