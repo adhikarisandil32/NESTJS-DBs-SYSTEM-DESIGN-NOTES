@@ -92,5 +92,6 @@ Think of it as a minimal environment to access your app’s services, modules, o
     deletedAt: Date;
   }
   ```
+  That way now just extend the `DBBaseEntity` on any module's entity that will always contain the `BaseEntity`.
 
 # Others
