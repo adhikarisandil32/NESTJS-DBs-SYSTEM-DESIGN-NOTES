@@ -24,33 +24,33 @@ Think of it as a minimal environment to access your app’s services, modules, o
 
 # Docker
 - A general way of writing a docker compose that uses environment in docker. Write this in a `docker-compose.yml` file and then go `docker compose up -d`, you'll be ready to use database in docker
-```
-volumes:
-  ${DATABASE_NAME}_pg_data:
-    name: '${DATABASE_NAME}_pg_data'
-
-services:
-  database:
-    container_name: '${DATABASE_NAME}_database'
-    image: postgres:16-bookworm
-    env_file:
-      - ./.env
-    environment:
-      POSTGRES_USER: '${DATABASE_USERNAME}'
-      POSTGRES_PASSWORD: '${DATABASE_PASSWORD}'
-      POSTGRES_DB: '${DATABASE_NAME}'
-    ports:
-      - '5439:5432'
-    volumes:
-      - ../${DATABASE_NAME}_pg_data:/var/lib/postgresql/data
-      # - ../data/postgres/initdb.d:/docker-entrypoint-initdb.d
-```
+  ```
+  volumes:
+    ${DATABASE_NAME}_pg_data:
+      name: '${DATABASE_NAME}_pg_data'
+  
+  services:
+    database:
+      container_name: '${DATABASE_NAME}_database'
+      image: postgres:16-bookworm
+      env_file:
+        - ./.env
+      environment:
+        POSTGRES_USER: '${DATABASE_USERNAME}'
+        POSTGRES_PASSWORD: '${DATABASE_PASSWORD}'
+        POSTGRES_DB: '${DATABASE_NAME}'
+      ports:
+        - '5439:5432'
+      volumes:
+        - ../${DATABASE_NAME}_pg_data:/var/lib/postgresql/data
+        # - ../data/postgres/initdb.d:/docker-entrypoint-initdb.d
+  ```
 - `docker exec -it <container_name> /bin/bash`, with this you can enter inside the bash of the container of the database. To use with user `postgres`, go `su postgres` and then `psql`. You'll be connected to the database of the docker. You can also list all the environment vairables used on the container by using `env` or `printenv` command from the terminal of `root` user. `PGDATA` and `PATH` variables can be important for volume maping in which `PGDATA` represents the path to postgres data.
-```
-    volumes:
-      - ../${DATABASE_NAME}_pg_data:/var/lib/postgresql/data
-      # - ../data/postgres/initdb.d:/docker-entrypoint-initdb.d
-```
+  ```
+      volumes:
+        - ../${DATABASE_NAME}_pg_data:/var/lib/postgresql/data
+        # - ../data/postgres/initdb.d:/docker-entrypoint-initdb.d
+  ```
 
 # Database & ORMs
 - use `@JoinColumn({name: 'user_id'})` decorator to rename the new table that will be created by creating the relation for e.g. `@ManyToOne(() => Users, (user) => user.id, { nullable: false })` on the table `todos`. `@Column` on column that will be on that table only, not on foreign key.
