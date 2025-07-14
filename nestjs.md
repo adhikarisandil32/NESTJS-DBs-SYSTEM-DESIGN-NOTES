@@ -257,6 +257,7 @@ Think of it as a minimal environment to access your app’s services, modules, o
         POSTGRES_DB: '${DATABASE_NAME}'
       ports:
         - '5439:5432'
+      restart: 'unless-stopped'
       volumes:
         - ../${DATABASE_NAME}_pg_data:/var/lib/postgresql/data
         # - ../data/postgres/initdb.d:/docker-entrypoint-initdb.d
