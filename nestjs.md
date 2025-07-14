@@ -138,7 +138,105 @@ Think of it as a minimal environment to access your app’s services, modules, o
 
     // this is imports
   ```
-  
+- To intercept the response of the controller, NestInterceptor is implemented by first creating a `response.module.ts` file to be used globally as below
+  ```
+    import { Module } from '@nestjs/common';
+    import { ResponseInterceptor } from './response.interceptor';
+    import { APP_INTERCEPTOR } from '@nestjs/core';
+    
+    @Module({
+      controllers: [],
+      providers: [
+        {
+          provide: APP_INTERCEPTOR,
+          useClass: ResponseInterceptor,
+        },
+      ],
+    })
+    export class ResponseModule {}
+  ```
+  and `response.interceptor.ts` as
+  ```
+    import {
+      CallHandler,
+      ExecutionContext,
+      Inject,
+      NestInterceptor,
+    } from '@nestjs/common';
+    import { Reflector } from '@nestjs/core';
+    import { Observable } from 'rxjs';
+    import { map } from 'rxjs/operators';
+    import { Request, Response } from 'express';
+    
+    export class ResponseInterceptor implements NestInterceptor {
+      constructor(@Inject() private readonly _reflector: Reflector) {}
+    
+      intercept(
+        context: ExecutionContext,
+        next: CallHandler<any>,
+      ): Observable<any> | Promise<Observable<any>> {
+        return next.handle().pipe(
+          map((dataAndCount) => {
+            const ctx = context.switchToHttp();
+            const response: Response = ctx.getResponse();
+            const request = ctx.getRequest<Request>();
+    
+            const message = this._reflector.get('message', context.getHandler());
+            const showPagination = this._reflector.get(
+              'showPagination',
+              context.getHandler(),
+            );
+    
+            const { data, count } = dataAndCount;
+    
+            if (!showPagination || count == null) {
+              return {
+                message,
+                status: response.statusCode,
+                success: response.statusCode < 400,
+                data,
+              };
+            }
+    
+            const _paginationMetadata = {
+              total: count,
+              limit: Number(request.query?.limit ?? 10),
+              page: Number(request.query?.page ?? 1),
+              get totalPage() {
+                return Math.ceil(count / this.limit);
+              },
+              get nextPage() {
+                return this.page >= this.totalPage ? null : this.page + 1;
+              },
+              get prevPage() {
+                return this.page <= 1 ? null : this.page - 1;
+              },
+            };
+    
+            return {
+              message,
+              status: response.statusCode,
+              success: response.statusCode < 400,
+              data,
+              _pagination: _paginationMetadata,
+            };
+          }),
+        );
+      }
+    }
+  ```
+  and then again creating custom decoratos to be used on `controllers` as below
+  ```
+    import { applyDecorators, SetMetadata } from '@nestjs/common';
+    
+    export function ResponseMessage(message: string) {
+      return applyDecorators(SetMetadata('message', message));
+    }
+    
+    export function ShowPagination(showPagination: boolean = true) {
+      return applyDecorators(SetMetadata('showPagination', showPagination));
+    }
+```
 
 # Docker
 - A general way of writing a docker compose that uses environment in docker. Write this in a `docker-compose.yml` file and then go `docker compose up -d`, you'll be ready to use database in docker
