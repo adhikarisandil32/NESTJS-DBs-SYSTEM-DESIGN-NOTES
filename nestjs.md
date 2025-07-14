@@ -138,12 +138,12 @@ Think of it as a minimal environment to access your app’s services, modules, o
 
     // this is imports
   ```
-- To intercept the response of the controller, NestInterceptor is implemented by first creating a `response.module.ts` file to be used globally as below
+- To intercept the response of the controller, NestInterceptor is implemented by first creating a `response.module.ts` file to be used globally as below. READ [`Binding Interceptors`](https://docs.nestjs.com/interceptors#binding-interceptors) for using it globally.
   ```
     import { Module } from '@nestjs/common';
     import { ResponseInterceptor } from './response.interceptor';
     import { APP_INTERCEPTOR } from '@nestjs/core';
-    // READ `Binding Interceptors` for using it globally from [here](https://docs.nestjs.com/interceptors#binding-interceptors)!
+    
     @Module({
       controllers: [],
       providers: [
