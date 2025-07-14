@@ -236,7 +236,7 @@ Think of it as a minimal environment to access your app’s services, modules, o
     export function ShowPagination(showPagination: boolean = true) {
       return applyDecorators(SetMetadata('showPagination', showPagination));
     }
-```
+  ```
 
 # Docker
 - A general way of writing a docker compose that uses environment in docker. Write this in a `docker-compose.yml` file and then go `docker compose up -d`, you'll be ready to use database in docker
