@@ -239,7 +239,7 @@ Think of it as a minimal environment to access your app’s services, modules, o
   ```
 
 # NestJS Swagger
-- This is the setup for swagger documentation in any nest application, specially sorting some tags alpabetically and some not.    
+- This is the setup for swagger documentation in any nest application's `main.ts` file, specially sorting some tags alpabetically and some not.    
     ```
       const swaggerDocumentBuild = new DocumentBuilder()
         .setTitle('Todos API Documentation')
